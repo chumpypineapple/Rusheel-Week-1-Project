@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dark Genome Atlas — Mid-Atlantic Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #09090f;
+  --bg2: #0f0f1a;
+  --bg3: #141424;
+  --card: #13131f;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e8f0;
+  --muted: #6b6b85;
+  --muted2: #9090aa;
+  --accent: #4f7cff;
+  --accent2: #7b5ea7;
+  --accent3: #00c9a7;
+  --accent4: #ff6b6b;
+  --accent5: #ffc947;
+  --mono: 'DM Mono', monospace;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 56px;
+  background: rgba(9,9,15,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+.nav-logo { width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; }
+.nav-logo svg { width: 16px; height: 16px; fill: #fff; }
+.nav-title { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.nav-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: 6px; }
+.nav-links { display: flex; gap: 4px; }
+.nav-link { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 500; color: var(--muted2); cursor: pointer; transition: all 0.15s; border: none; background: none; }
+.nav-link:hover, .nav-link.active { color: var(--text); background: rgba(255,255,255,0.06); }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-badge { font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: 4px; background: rgba(79,124,255,0.15); color: var(--accent); border: 1px solid rgba(79,124,255,0.25); }
+
+/* ── HERO ── */
+.hero {
+  padding: 120px 2rem 64px;
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+}
+.hero-eyebrow { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px; }
+.hero-title { font-family: var(--serif); font-size: 46px; line-height: 1.15; font-weight: 400; margin-bottom: 20px; }
+.hero-title em { font-style: italic; color: var(--accent); }
+.hero-body { font-size: 15px; color: var(--muted2); line-height: 1.8; margin-bottom: 32px; }
+.hero-stats { display: flex; gap: 32px; }
+.hero-stat-num { font-size: 26px; font-weight: 600; color: var(--text); font-family: var(--mono); }
+.hero-stat-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+.hero-vis { position: relative; }
+.hero-map-wrap { background: var(--card); border: 1px solid var(--border2); border-radius: 16px; padding: 1.5rem; }
+.hero-map-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+
+/* ── SECTION ── */
+.section { max-width: 1200px; margin: 0 auto; padding: 64px 2rem; }
+.section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; }
+.section-eyebrow { font-family: var(--mono); font-size: 10px; color: var(--accent3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+.section-title { font-family: var(--serif); font-size: 28px; font-weight: 400; }
+.section-divider { height: 1px; background: linear-gradient(90deg, var(--border2), transparent); margin: 0 2rem; }
+
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; }
+.filter-input { flex: 1; min-width: 200px; background: var(--card); border: 1px solid var(--border2); border-radius: 8px; padding: 8px 14px; color: var(--text); font-family: var(--sans); font-size: 13px; outline: none; }
+.filter-input:focus { border-color: var(--accent); }
+.filter-input::placeholder { color: var(--muted); }
+.filter-select { background: var(--card); border: 1px solid var(--border2); border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: var(--sans); font-size: 12px; outline: none; cursor: pointer; }
+.filter-select:focus { border-color: var(--accent); }
+.chip { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; border: 1px solid var(--border2); cursor: pointer; color: var(--muted2); background: transparent; transition: all 0.15s; white-space: nowrap; }
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.on { background: rgba(79,124,255,0.12); border-color: var(--accent); color: var(--accent); }
+
+/* ── TABLE ── */
+.table-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
+thead { background: var(--bg3); }
+th { padding: 10px 14px; text-align: left; font-weight: 500; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--muted2); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+td.name-cell { color: var(--text); font-weight: 500; }
+td.name-cell a { color: var(--text); text-decoration: none; }
+td.name-cell a:hover { color: var(--accent); }
+
+/* ── PILLS ── */
+.pill { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 500; white-space: nowrap; }
+.pill-herv { background: rgba(79,124,255,0.15); color: #7ba3ff; border: 1px solid rgba(79,124,255,0.2); }
+.pill-te { background: rgba(123,94,167,0.2); color: #b48fe0; border: 1px solid rgba(123,94,167,0.25); }
+.pill-neo { background: rgba(0,201,167,0.12); color: #3ddab9; border: 1px solid rgba(0,201,167,0.2); }
+.pill-epi { background: rgba(255,107,107,0.12); color: #ff9090; border: 1px solid rgba(255,107,107,0.2); }
+.pill-ai { background: rgba(255,201,71,0.12); color: #ffd96b; border: 1px solid rgba(255,201,71,0.2); }
+.pill-rna { background: rgba(0,201,167,0.08); color: #56c9b2; border: 1px solid rgba(0,201,167,0.15); }
+.pill-stage-pre { background: rgba(255,255,255,0.05); color: var(--muted2); border: 1px solid var(--border); }
+.pill-stage-p1 { background: rgba(255,201,71,0.1); color: #ffd06b; border: 1px solid rgba(255,201,71,0.2); }
+.pill-stage-p2 { background: rgba(0,201,167,0.1); color: #3ddab9; border: 1px solid rgba(0,201,167,0.2); }
+.pill-stage-p3 { background: rgba(79,124,255,0.12); color: #7ba3ff; border: 1px solid rgba(79,124,255,0.2); }
+.pill-startup { background: rgba(79,124,255,0.1); color: #8ab0ff; border: 1px solid rgba(79,124,255,0.15); }
+.pill-academic { background: rgba(123,94,167,0.12); color: #c4a0e8; border: 1px solid rgba(123,94,167,0.2); }
+.pill-patent { background: rgba(255,201,71,0.1); color: #ffc94a; border: 1px solid rgba(255,201,71,0.2); }
+.pill-clinical { background: rgba(0,201,167,0.1); color: #4dcfb8; border: 1px solid rgba(0,201,167,0.2); }
+.priority-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
+.p-high { background: #ff6b6b; }
+.p-med { background: #ffc947; }
+.p-low { background: var(--muted); }
+
+/* ── MAP SECTION ── */
+.map-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 64px 2rem; }
+.map-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 380px; gap: 2.5rem; align-items: start; }
+#map-svg-wrap { background: var(--card); border: 1px solid var(--border2); border-radius: 16px; padding: 1.5rem; position: relative; }
+.map-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+#entity-detail { background: var(--card); border: 1px solid var(--border2); border-radius: 16px; padding: 1.5rem; position: sticky; top: 72px; }
+.detail-placeholder { color: var(--muted); font-size: 13px; text-align: center; padding: 40px 0; }
+.detail-placeholder svg { width: 32px; height: 32px; opacity: 0.3; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
+.detail-name { font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 4px; }
+.detail-type-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.detail-section-lbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; margin-top: 14px; }
+.detail-value { font-size: 13px; color: var(--muted2); line-height: 1.6; }
+.detail-value strong { color: var(--text); font-weight: 500; }
+.detail-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--accent); text-decoration: none; margin-top: 12px; }
+.detail-link:hover { text-decoration: underline; }
+.detail-close { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; }
+
+/* ── SEARCH PANEL ── */
+.ai-section { padding: 64px 2rem; max-width: 1200px; margin: 0 auto; }
+.ai-panel { background: var(--card); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; }
+.ai-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.ai-icon { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; }
+.ai-title { font-size: 15px; font-weight: 600; }
+.ai-sub { font-size: 12px; color: var(--muted); }
+.ai-search-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.ai-search-row input { flex: 1; background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 16px; color: var(--text); font-size: 14px; outline: none; font-family: var(--sans); }
+.ai-search-row input:focus { border-color: var(--accent); }
+.ai-search-row button { padding: 10px 20px; border-radius: 8px; background: var(--accent); color: #fff; border: none; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; font-family: var(--sans); transition: opacity 0.15s; }
+.ai-search-row button:hover { opacity: 0.85; }
+.ai-search-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+.preset-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.preset { padding: 5px 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; font-size: 11px; color: var(--muted2); cursor: pointer; transition: all 0.15s; }
+.preset:hover { border-color: var(--accent); color: var(--accent); }
+.ai-output { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; min-height: 80px; }
+.ai-output-placeholder { color: var(--muted); font-size: 13px; }
+#ai-result-cards { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.result-card { background: var(--card); border: 1px solid var(--border2); border-radius: 10px; padding: 1rem 1.25rem; }
+.rc-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+.rc-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.rc-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.rc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; font-size: 11px; }
+.rc-field-lbl { color: var(--muted); margin-bottom: 2px; font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; }
+.rc-field-val { color: var(--muted2); }
+.rc-relevance { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted2); line-height: 1.7; }
+.rc-relevance strong { color: var(--accent3); font-weight: 500; }
+.rc-actions { display: flex; gap: 6px; margin-top: 10px; }
+.rc-btn { padding: 5px 12px; border-radius: 6px; font-size: 11px; border: 1px solid var(--border2); background: transparent; color: var(--muted2); cursor: pointer; transition: all 0.15s; font-family: var(--sans); }
+.rc-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+.rc-btn.primary { background: rgba(79,124,255,0.12); border-color: rgba(79,124,255,0.3); color: var(--accent); }
+.rc-btn.primary:hover { background: rgba(79,124,255,0.2); }
+
+/* ── SPINNER ── */
+.spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: -2px; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── FOOTER ── */
+footer { border-top: 1px solid var(--border); padding: 32px 2rem; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.footer-brand { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.footer-note { font-size: 11px; color: var(--muted); }
+
+/* ── MAP SVG ── */
+.map-pin { cursor: pointer; transition: transform 0.15s; transform-origin: center; }
+.map-pin:hover { transform: scale(1.3); }
+.map-pin circle.outer { fill: transparent; stroke-width: 1.5; opacity: 0.6; }
+.map-pin circle.inner { }
+.pin-herv .outer { stroke: #4f7cff; }
+.pin-herv .inner { fill: #4f7cff; }
+.pin-te .outer { stroke: #b48fe0; }
+.pin-te .inner { fill: #b48fe0; }
+.pin-neo .outer { stroke: #3ddab9; }
+.pin-neo .inner { fill: #3ddab9; }
+.pin-epi .outer { stroke: #ff9090; }
+.pin-epi .inner { fill: #ff9090; }
+.pin-ai .outer { stroke: #ffd96b; }
+.pin-ai .inner { fill: #ffd96b; }
+.pin-academic .outer { stroke: #c4a0e8; }
+.pin-academic .inner { fill: #c4a0e8; }
+.pin-active .outer { opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { r: 10; opacity: 0.6; } 50% { r: 14; opacity: 0.2; } }
+
+.export-row { display: flex; gap: 8px; margin-top: 24px; justify-content: flex-end; }
+.export-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; border: 1px solid var(--border2); background: var(--bg2); color: var(--muted2); cursor: pointer; font-family: var(--sans); transition: all 0.15s; }
+.export-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+
+.badge-count { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: rgba(79,124,255,0.2); color: var(--accent); font-size: 10px; font-weight: 600; margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 16 16"><path d="M8 1L2 4v4c0 3.5 2.5 6.3 6 7 3.5-.7 6-3.5 6-7V4L8 1z"/></svg>
+    </div>
+    <span class="nav-title">Dark Genome Atlas</span>
+    <span class="nav-sub">Mid-Atlantic Intelligence Platform</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="scrollTo('companies')">Companies</button>
+    <button class="nav-link" onclick="scrollTo('map-section')">Regional Map</button>
+    <button class="nav-link" onclick="scrollTo('academic')">Academic IP</button>
+    <button class="nav-link" onclick="scrollTo('search-section')">AI Research</button>
+  </div>
+  <div class="nav-right">
+    <span class="nav-badge">PHASE 1 — STARTUP LANDSCAPE</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">Therapeutic Target Discovery Intelligence</div>
+    <h1 class="hero-title">The <em>dark genome</em><br>is the next frontier<br>in oncology.</h1>
+    <p class="hero-body">A structured landscape map of companies, academic technologies, patents, and licensable assets in dark-genome therapeutic target discovery — with a focus on the Mid-Atlantic biotech corridor.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num" id="s-companies">28</div>
+        <div class="hero-stat-lbl">Companies tracked</div>
+      </div>
+      <div>
+        <div class="hero-stat-num" id="s-academic">14</div>
+        <div class="hero-stat-lbl">Academic assets</div>
+      </div>
+      <div>
+        <div class="hero-stat-num" id="s-clinical">9</div>
+        <div class="hero-stat-lbl">Clinical programs</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">NJ · PA · NY · DE</div>
+        <div class="hero-stat-lbl">Primary region</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-vis">
+    <div class="hero-map-wrap">
+      <div class="hero-map-label">Mid-Atlantic Biotech Cluster — HERV &amp; Dark Genome</div>
+      <svg viewBox="0 0 340 300" width="100%" style="display:block;">
+        <!-- simplified state outlines -->
+        <!-- NY state rough -->
+        <path d="M60,20 L180,20 L195,40 L200,80 L180,95 L160,90 L150,110 L140,125 L120,130 L100,120 L80,125 L60,115 L40,100 L30,75 L35,45 Z" fill="#1a1a2e" stroke="#2a2a45" stroke-width="1"/>
+        <!-- NJ -->
+        <path d="M160,90 L180,95 L185,115 L180,135 L170,155 L155,165 L145,155 L140,140 L140,125 L150,110 Z" fill="#16213e" stroke="#2a2a45" stroke-width="1"/>
+        <!-- PA -->
+        <path d="M40,100 L60,115 L80,125 L100,120 L120,130 L140,125 L140,140 L145,155 L120,165 L90,170 L60,165 L35,155 L25,135 L30,115 Z" fill="#1a1a2e" stroke="#2a2a45" stroke-width="1"/>
+        <!-- DE -->
+        <path d="M145,155 L155,165 L155,185 L150,195 L140,190 L138,175 L140,160 Z" fill="#16213e" stroke="#2a2a45" stroke-width="1"/>
+        <!-- Water -->
+        <path d="M185,115 L200,120 L210,140 L205,165 L195,185 L185,200 L170,210 L155,200 L155,185 L155,165 L170,155 L180,135 Z" fill="#0d0d1f" stroke="#1a1a3e" stroke-width="0.5" opacity="0.8"/>
+
+        <!-- State labels -->
+        <text x="105" y="68" font-family="DM Mono,monospace" font-size="9" fill="#3a3a5a" letter-spacing="2">NEW YORK</text>
+        <text x="158" y="130" font-family="DM Mono,monospace" font-size="7" fill="#3a3a5a" letter-spacing="1">NJ</text>
+        <text x="72" y="145" font-family="DM Mono,monospace" font-size="7" fill="#3a3a5a" letter-spacing="1">PENNSYLVANIA</text>
+        <text x="141" y="178" font-family="DM Mono,monospace" font-size="6" fill="#3a3a5a">DE</text>
+        <text x="190" y="155" font-family="DM Mono,monospace" font-size="7" fill="#2a3050" letter-spacing="1">ATLANTIC</text>
+
+        <!-- NYC cluster -->
+        <circle cx="175" cy="90" r="16" fill="rgba(79,124,255,0.06)" stroke="rgba(79,124,255,0.2)" stroke-width="1"/>
+        <circle cx="175" cy="90" r="5" fill="#4f7cff" opacity="0.9"/>
+        <text x="185" y="88" font-family="DM Mono,monospace" font-size="7" fill="#6080cc">NYC</text>
+
+        <!-- Philly cluster -->
+        <circle cx="110" cy="148" r="12" fill="rgba(0,201,167,0.06)" stroke="rgba(0,201,167,0.2)" stroke-width="1"/>
+        <circle cx="110" cy="148" r="4" fill="#00c9a7" opacity="0.8"/>
+        <text x="120" y="151" font-family="DM Mono,monospace" font-size="7" fill="#3a9a88">PHL</text>
+
+        <!-- Princeton/NJ cluster -->
+        <circle cx="158" cy="128" r="3.5" fill="#b48fe0" opacity="0.85"/>
+        <text x="164" y="131" font-family="DM Mono,monospace" font-size="6" fill="#8060a0">PNJ</text>
+
+        <!-- Boston pointer faint -->
+        <circle cx="225" cy="35" r="3" fill="#4f7cff" opacity="0.3"/>
+        <text x="230" y="38" font-family="DM Mono,monospace" font-size="6" fill="#3a4070">BOS ↗</text>
+        <line x1="180" y1="82" x2="223" y2="37" stroke="#2a2a45" stroke-width="0.5" stroke-dasharray="2,3"/>
+
+        <!-- Compass -->
+        <text x="280" y="280" font-family="DM Mono,monospace" font-size="8" fill="#2a2a45">N ↑</text>
+
+        <!-- Mini legend -->
+        <circle cx="20" cy="260" r="4" fill="#4f7cff"/>
+        <text x="28" y="264" font-family="DM Mono,monospace" font-size="7" fill="#4a4a6a">HERV</text>
+        <circle cx="20" cy="275" r="4" fill="#3ddab9"/>
+        <text x="28" y="279" font-family="DM Mono,monospace" font-size="7" fill="#4a4a6a">Neoantigen</text>
+        <circle cx="80" cy="260" r="4" fill="#b48fe0"/>
+        <text x="88" y="264" font-family="DM Mono,monospace" font-size="7" fill="#4a4a6a">TE</text>
+        <circle cx="80" cy="275" r="4" fill="#ffd96b"/>
+        <text x="88" y="279" font-family="DM Mono,monospace" font-size="7" fill="#4a4a6a">AI Platform</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- COMPANIES TABLE -->
+<div class="section" id="companies">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">Phase 1 — Startup Landscape</div>
+      <h2 class="section-title">Company Intelligence Database</h2>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="export-btn" onclick="exportCSV('companies')">↓ Export CSV</button>
+    </div>
+  </div>
+  <div class="filter-bar">
+    <input class="filter-input" id="co-search" placeholder="Search companies, targets, investors..." oninput="filterTable()" />
+    <select class="filter-select" id="co-target" onchange="filterTable()">
+      <option value="">All targets</option>
+      <option>HERV / ERV</option>
+      <option>Transposable element</option>
+      <option>Noncanonical ORF</option>
+      <option>Cryptic peptide</option>
+      <option>Epigenetically induced</option>
+      <option>AI / Platform</option>
+    </select>
+    <select class="filter-select" id="co-stage" onchange="filterTable()">
+      <option value="">All stages</option>
+      <option>Discovery</option>
+      <option>Preclinical</option>
+      <option>Phase 1</option>
+      <option>Phase 2</option>
+      <option>Phase 3</option>
+    </select>
+    <select class="filter-select" id="co-priority" onchange="filterTable()">
+      <option value="">All priorities</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="co-table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Location</th>
+          <th>Target type</th>
+          <th>Modality</th>
+          <th>Indication</th>
+          <th>Stage</th>
+          <th>Funding</th>
+          <th>Key investors</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody id="co-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- REGIONAL MAP -->
+<div class="map-section" id="map-section">
+  <div class="section-header" style="max-width:1200px;margin:0 auto 32px;">
+    <div>
+      <div class="section-eyebrow">Geospatial Intelligence</div>
+      <h2 class="section-title">Mid-Atlantic Biotech Cluster Map</h2>
+    </div>
+  </div>
+  <div class="map-inner">
+    <div id="map-svg-wrap">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">Click any pin to view entity details</div>
+      <svg id="region-map" viewBox="0 0 520 480" width="100%" style="display:block;">
+        <!-- ── STATE FILLS ── -->
+        <!-- New York -->
+        <path d="M80,30 L310,30 L330,55 L340,100 L320,130 L280,145 L255,140 L240,170 L225,195 L205,205 L185,195 L165,200 L150,185 L130,180 L100,190 L75,175 L50,155 L40,120 L45,75 Z" fill="#12122a" stroke="#252545" stroke-width="1.5"/>
+        <!-- New Jersey -->
+        <path d="M255,140 L280,145 L295,175 L285,210 L270,240 L250,260 L232,255 L220,240 L215,220 L220,200 L225,195 L240,170 Z" fill="#0f1128" stroke="#252545" stroke-width="1.5"/>
+        <!-- Pennsylvania -->
+        <path d="M50,155 L75,175 L100,190 L130,180 L150,185 L165,200 L160,220 L155,245 L130,260 L100,268 L65,262 L35,250 L20,225 L22,195 L38,170 Z" fill="#12122a" stroke="#252545" stroke-width="1.5"/>
+        <!-- Delaware -->
+        <path d="M220,240 L232,255 L235,285 L228,305 L215,300 L210,282 L212,260 Z" fill="#0f1128" stroke="#252545" stroke-width="1.5"/>
+        <!-- Maryland (partial) -->
+        <path d="M155,245 L160,220 L165,200 L185,195 L205,205 L215,220 L212,260 L210,282 L195,288 L175,285 L158,275 L148,262 Z" fill="#111128" stroke="#252545" stroke-width="1.5"/>
+        <!-- Water / Atlantic -->
+        <path d="M285,210 L310,220 L325,255 L320,295 L305,330 L285,350 L265,355 L250,345 L235,320 L235,285 L232,255 L250,260 L270,240 Z" fill="#080818" stroke="#1a1a35" stroke-width="0.5"/>
+
+        <!-- City labels -->
+        <text x="255" y="128" font-family="DM Mono,monospace" font-size="11" fill="#3a3a7a" letter-spacing="1.5">NEW YORK</text>
+        <text x="85" y="225" font-family="DM Mono,monospace" font-size="9" fill="#2a2a5a" letter-spacing="1">PENNSYLVANIA</text>
+        <text x="248" y="210" font-family="DM Mono,monospace" font-size="8" fill="#2a2a5a" letter-spacing="0.5">NEW JERSEY</text>
+        <text x="212" y="272" font-family="DM Mono,monospace" font-size="7" fill="#2a2a5a">DEL</text>
+        <text x="162" y="248" font-family="DM Mono,monospace" font-size="7" fill="#2a2a5a" letter-spacing="0.3">MD</text>
+        <text x="296" y="280" font-family="DM Mono,monospace" font-size="9" fill="#1e2048" letter-spacing="1">ATLANTIC</text>
+        <text x="296" y="292" font-family="DM Mono,monospace" font-size="9" fill="#1e2048" letter-spacing="1">OCEAN</text>
+
+        <!-- Entity pins - will be rendered by JS -->
+        <g id="map-pins"></g>
+
+        <!-- Compass -->
+        <g transform="translate(470,40)">
+          <circle cx="0" cy="0" r="14" fill="#111" stroke="#252545" stroke-width="1"/>
+          <text x="0" y="-5" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#4a4a6a">N</text>
+          <line x1="0" y1="-11" x2="0" y2="-3" stroke="#4f7cff" stroke-width="1.5"/>
+          <circle cx="0" cy="0" r="2" fill="#4f7cff"/>
+        </g>
+
+        <!-- Scale bar -->
+        <g transform="translate(30,450)">
+          <line x1="0" y1="0" x2="60" y2="0" stroke="#252545" stroke-width="1.5"/>
+          <line x1="0" y1="-4" x2="0" y2="4" stroke="#252545" stroke-width="1.5"/>
+          <line x1="60" y1="-4" x2="60" y2="4" stroke="#252545" stroke-width="1.5"/>
+          <text x="30" y="-8" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#3a3a5a">~100 mi</text>
+        </g>
+      </svg>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#4f7cff"></div>HERV / ERV</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#b48fe0"></div>Transposable element</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3ddab9"></div>Neoantigen / cryptic</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ffd96b"></div>AI platform</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ff9090"></div>Epigenetic</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c4a0e8"></div>Academic</div>
+      </div>
+    </div>
+    <div id="entity-detail">
+      <div class="detail-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        Click a pin on the map to view detailed entity profile
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACADEMIC TABLE -->
+<div class="section" id="academic">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">Phase 2 — IP &amp; Academic Landscape</div>
+      <h2 class="section-title">Academic Technologies &amp; Licensable Assets</h2>
+    </div>
+    <button class="export-btn" onclick="exportCSV('academic')">↓ Export CSV</button>
+  </div>
+  <div class="table-wrap">
+    <table id="ac-table">
+      <thead>
+        <tr>
+          <th>Institution / Asset</th>
+          <th>Location</th>
+          <th>Source</th>
+          <th>Target</th>
+          <th>Technology</th>
+          <th>Status</th>
+          <th>Key PI</th>
+          <th>Relevance</th>
+        </tr>
+      </thead>
+      <tbody id="ac-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- AI SEARCH -->
+<div class="ai-section" id="search-section">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">AI-Powered Research Engine</div>
+      <h2 class="section-title">Live Landscape Research</h2>
+    </div>
+  </div>
+  <div class="ai-panel">
+    <div class="ai-header">
+      <div class="ai-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <div>
+        <div class="ai-title">Expand the database</div>
+        <div class="ai-sub">Search live sources: startups, ClinicalTrials, patents, PubMed, NIH RePORTER</div>
+      </div>
+    </div>
+    <div class="preset-grid">
+      <span class="preset" onclick="setQ('HERV cancer therapy startup endogenous retrovirus immunotherapy')">HERV cancer therapy</span>
+      <span class="preset" onclick="setQ('noncanonical antigen discovery immunopeptidomics cancer')">Noncanonical antigens</span>
+      <span class="preset" onclick="setQ('transposable element cancer immunotherapy startup biotech')">Transposable elements</span>
+      <span class="preset" onclick="setQ('dark genome cancer therapeutics target discovery')">Dark genome therapeutics</span>
+      <span class="preset" onclick="setQ('cryptic peptide cancer vaccine TCR therapy neoantigen')">Cryptic peptide vaccines</span>
+      <span class="preset" onclick="setQ('epigenetic viral mimicry tumor antigen cancer therapy DNMT HDAC')">Epigenetic viral mimicry</span>
+      <span class="preset" onclick="setQ('AI proteomics antigen discovery platform cancer biotech')">AI antigen discovery</span>
+      <span class="preset" onclick="setQ('ERV endogenous retrovirus antigen cancer vaccine clinical trial')">ERV cancer vaccines</span>
+      <span class="preset" onclick="setQ('Princeton Penn Columbia Yale HERV dark genome research lab')">Mid-Atlantic academic labs</span>
+    </div>
+    <div class="ai-search-row">
+      <input type="text" id="ai-query" placeholder="e.g. 'HERV-K cancer immunotherapy company Series A'" value="HERV cancer therapy startup endogenous retrovirus immunotherapy" />
+      <button id="ai-btn" onclick="runAISearch()">Search live ↗</button>
+    </div>
+    <div class="ai-output" id="ai-output">
+      <span class="ai-output-placeholder">Results will appear here — searches the web in real time and returns structured profiles.</span>
+    </div>
+    <div id="ai-result-cards"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">DARK GENOME ATLAS / MID-ATLANTIC INTELLIGENCE PLATFORM / 2025</div>
+  <div class="footer-note">For internal research use. Sources: Crunchbase, ClinicalTrials.gov, USPTO, PubMed, NIH RePORTER, WIPO.</div>
+</footer>
+
+<script>
+// ── DATA ──
+const companies = [
+  { name:"Agenus", url:"https://www.agenusbio.com", location:"Lexington, MA (NYC office)", region:"nyc", target:"HERV / ERV", modality:"Cancer immunotherapy / checkpoint", indication:"Multiple solid tumors", stage:"Phase 2", funding:"$500M+", investors:"Public (AGEN)", priority:"high", relevance:"Pioneer in neoantigen and tumor-specific antigen discovery; HERV-derived antigen work ongoing.", pinX:262, pinY:152 },
+  { name:"EpiVax Oncology", url:"https://epivax.com", location:"Providence, RI / Philadelphia, PA", region:"phl", target:"HERV / ERV", modality:"Cancer vaccine / T-cell epitope", indication:"Melanoma, lung cancer", stage:"Preclinical", funding:"$12M", investors:"NIH SBIR, private", priority:"high", relevance:"Directly working on HERV-derived T-cell epitopes for personalized cancer vaccines.", pinX:140, pinY:200 },
+  { name:"OncBioMune Pharmaceuticals", url:"https://oncbiomune.com", location:"Baton Rouge, LA (NJ partnership)", region:"nj", target:"HERV / ERV", modality:"Therapeutic cancer vaccine", indication:"Prostate, lung", stage:"Phase 1", funding:"$8M", investors:"Private", priority:"high", relevance:"Cancer vaccine platform with HERV antigen component in prostate cancer.", pinX:268, pinY:200 },
+  { name:"Nouscom", url:"https://nouscom.com", location:"Basel / Philadelphia area", region:"phl", target:"Noncanonical ORF", modality:"Viral vector neoantigen vaccine", indication:"CRC, pancreatic, NSCLC", stage:"Phase 2", funding:"$135M", investors:"Redmile Group, Forbion", priority:"high", relevance:"Genome-wide neoantigen approach including non-canonical open reading frames; Philadelphia-area operations.", pinX:135, pinY:208 },
+  { name:"Genocea Biosciences (legacy)", url:"https://www.genocea.com", location:"Cambridge, MA", region:"nyc", target:"Noncanonical ORF", modality:"Neoantigen cancer vaccine", indication:"NSCLC, melanoma", stage:"Phase 2", funding:"$250M+", investors:"Atlas, Polaris", priority:"medium", relevance:"ATLAS neoantigen discovery platform identified cryptic/non-canonical antigens; acquired IP now licensable.", pinX:268, pinY:138 },
+  { name:"Gritstone bio", url:"https://gritstonebio.com", location:"Emeryville, CA / NYC clinical", region:"nyc", target:"Noncanonical ORF", modality:"mRNA + viral vector cancer vaccine", indication:"NSCLC, CRC, HIV", stage:"Phase 2", funding:"$400M+", investors:"BlackRock, RA Capital", priority:"high", relevance:"EDGE AI platform identifies shared and personal neoantigens including non-canonical ORFs from RNA-seq.", pinX:270, pinY:148 },
+  { name:"Tempus AI", url:"https://www.tempus.com", location:"Chicago / NYC office", region:"nyc", target:"AI / Platform", modality:"AI genomics + antigen discovery", indication:"Pan-cancer", stage:"Platform / research", funding:"$1.3B", investors:"Google, Franklin Templeton", priority:"medium", relevance:"AI-driven multiomics platform that can identify dark-genome derived antigens at scale.", pinX:264, pinY:145 },
+  { name:"BigHat Biosciences", url:"https://bighatbio.com", location:"San Mateo / NYC partnerships", region:"nyc", target:"AI / Platform", modality:"AI antibody + antigen design", indication:"Oncology, immunology", stage:"Platform / research", funding:"$75M", investors:"AME Cloud, a16z", priority:"low", relevance:"ML-driven antigen and antibody optimization platform applicable to HERV-derived targets.", pinX:272, pinY:153 },
+  { name:"Achilles Therapeutics", url:"https://achillestx.com", location:"London / Philadelphia partnered", region:"phl", target:"Cryptic peptide", modality:"clonally expanded TIL therapy", indication:"NSCLC, melanoma", stage:"Phase 2", funding:"$250M+", investors:"Public (ACHL)", priority:"high", relevance:"PELEUS platform identifies clonally expanded tumor-specific T-cell targets including cryptic antigens.", pinX:138, pinY:213 },
+  { name:"Avidea Technologies", url:"https://avideabio.com", location:"Baltimore, MD / Philadelphia", region:"phl", target:"Cryptic peptide", modality:"Polymer nanoparticle vaccine", indication:"Cancer vaccine + immunotherapy", stage:"Preclinical", funding:"$25M", investors:"8VC, Y Combinator", priority:"medium", relevance:"Nanoparticle delivery of cryptic tumor peptides for T-cell priming; Johns Hopkins spinout.", pinX:158, pinY:238 },
+  { name:"Repertoire Immune Medicine", url:"https://www.repertoire.com", location:"Cambridge, MA / NYC", region:"nyc", target:"Cryptic peptide", modality:"TCR discovery + T cell profiling", indication:"Oncology, autoimmune", stage:"Platform / research", funding:"$289M", investors:"General Atlantic, NVentures", priority:"high", relevance:"DECODE platform maps tumor-reactive TCRs including those recognizing cryptic and HERV-derived antigens.", pinX:266, pinY:146 },
+  { name:"Immunomedics (Gilead)", url:"https://immunomedics.com", location:"Morris Plains, NJ", region:"nj", target:"Noncanonical ORF", modality:"ADC / targeted therapy", indication:"TNBC, urothelial", stage:"Phase 3", funding:"Acquired $21B", investors:"Gilead Sciences", priority:"medium", relevance:"NJ-based; Trop-2 ADC includes tumor-specific antigen discovery with cryptic surface epitope work.", pinX:258, pinY:188 },
+  { name:"Syros Pharmaceuticals", url:"https://syros.com", location:"Cambridge / NYC trials", region:"nyc", target:"Epigenetically induced", modality:"CDK7 / transcription therapy", indication:"AML, breast cancer", stage:"Phase 2", funding:"$200M+", investors:"Atlas, OrbiMed", priority:"medium", relevance:"Epigenetic therapy activating viral mimicry pathways and revealing hidden tumor antigens.", pinX:267, pinY:150 },
+  { name:"Deciphera Pharmaceuticals", url:"https://deciphera.com", location:"Lawrence, KS / NJ office", region:"nj", target:"Epigenetically induced", modality:"Kinase inhibitor + immunotherapy", indication:"GIST, sarcoma", stage:"Phase 3", funding:"$300M+", investors:"Public (DCPH)", priority:"low", relevance:"Epigenetic combination strategies relevant to HERV derepression; NJ commercial presence.", pinX:260, pinY:193 },
+  { name:"Imago BioSciences (MerckKGaA)", url:"https://imagobiosciences.com", location:"San Francisco / NJ campus", region:"nj", target:"Epigenetically induced", modality:"LSD1 inhibitor", indication:"Myelofibrosis, cancer", stage:"Phase 2", funding:"Acquired", investors:"Merck KGaA", priority:"low", relevance:"LSD1 inhibition derepresses ERV/HERV expression; NJ Merck campus operations.", pinX:262, pinY:190 },
+  { name:"Iovance Biotherapeutics", url:"https://iovance.com", location:"Philadelphia, PA (HQ)", region:"phl", target:"Noncanonical ORF", modality:"TIL cell therapy", indication:"Melanoma, cervical, NSCLC", stage:"Phase 3", funding:"$800M+", investors:"Public (IOVA)", priority:"high", relevance:"Philadelphia-HQ'd TIL therapy company; tumor-infiltrating lymphocytes target novel/cryptic antigens.", pinX:130, pinY:203 },
+  { name:"Relay Therapeutics", url:"https://relaytx.com", location:"Cambridge / NYC", region:"nyc", target:"AI / Platform", modality:"AI-guided precision medicine", indication:"Cancer (FGFR2, PIK3CA)", stage:"Phase 2", funding:"$500M+", investors:"Public (RLY)", priority:"low", relevance:"AI motion-guided drug design applicable to dark-genome derived protein targets.", pinX:269, pinY:143 },
+  { name:"Tmunity Therapeutics (U Penn spinout)", url:"https://tmunity.com", location:"Philadelphia, PA", region:"phl", target:"Noncanonical ORF", modality:"CAR-T / TCR-T therapy", indication:"Multiple myeloma, solid tumors", stage:"Phase 1", funding:"$150M", investors:"Parker Institute, Gilead", priority:"high", relevance:"Penn Medicine spinout; advanced CAR-T and TCR-T targeting novel tumor antigens including HERVs.", pinX:128, pinY:200 },
+  { name:"Imvax", url:"https://imvax.com", location:"Philadelphia, PA", region:"phl", target:"HERV / ERV", modality:"Personalized GBM vaccine", indication:"Glioblastoma", stage:"Phase 2", funding:"$65M", investors:"Penn, private", priority:"high", relevance:"GBM vaccine directly targeting IDH1 and potentially HERV-derived antigens in glioblastoma.", pinX:133, pinY:205 },
+  { name:"Corcept Therapeutics", url:"https://corcept.com", location:"Menlo Park / NJ trials", region:"nj", target:"Epigenetically induced", modality:"GR antagonist + immunotherapy", indication:"Ovarian, adrenal", stage:"Phase 3", funding:"Public (CORT)", investors:"Public", priority:"low", relevance:"Mifepristone + checkpoint combo relevant to epigenetic tumor antigen upregulation.", pinX:264, pinY:197 },
+  { name:"Prelude Therapeutics", url:"https://preludetx.com", location:"Wilmington, DE (HQ)", region:"de", target:"Epigenetically induced", modality:"EZH2 / CDK9 inhibitor", indication:"AML, MDS, solid tumors", stage:"Phase 1", funding:"$85M", investors:"Public (PRLD)", priority:"high", relevance:"Wilmington DE-HQ'd; EZH2 inhibition derepresses retroelements and HERV loci in tumor cells.", pinX:220, pinY:262 },
+  { name:"Chroma Medicine", url:"https://chromamedicine.com", location:"Boston / Mid-Atlantic research", region:"nyc", target:"Epigenetically induced", modality:"Epigenome editing", indication:"Broad oncology", stage:"Discovery", funding:"$60M", investors:"ARCH Venture, GV", priority:"medium", relevance:"Epigenome editing to activate or silence HERV/TE loci — potential therapeutic and target discovery tool.", pinX:268, pinY:155 },
+  { name:"Personal Genome Diagnostics (PGDx)", url:"https://pgdx.com", location:"Baltimore, MD / Philadelphia", region:"phl", target:"AI / Platform", modality:"Liquid biopsy + tumor profiling", indication:"Pan-cancer diagnostics", stage:"Platform / research", funding:"$100M+", investors:"Illumina, Johnson & Johnson", priority:"medium", relevance:"Tumor genomic profiling platform can detect ERV/TE expression and non-canonical antigen signatures.", pinX:152, pinY:240 },
+  { name:"Turning Point Therapeutics (BMS)", url:"https://turningpointtx.com", location:"San Diego / NJ (BMS)", region:"nj", target:"AI / Platform", modality:"Next-gen kinase inhibitor", indication:"NSCLC, RET, ROS1", stage:"Phase 3", funding:"Acquired $4.1B", investors:"Bristol Myers Squibb", priority:"low", relevance:"BMS NJ campus; precision oncology with epigenetic tumor antigen research adjacent.", pinX:261, pinY:196 },
+  { name:"Carmine Therapeutics", url:"https://carminetherapeutics.com", location:"Boston / NJ partnerships", region:"nj", target:"HERV / ERV", modality:"HERV-based gene delivery (RECON)", indication:"Oncology, rare disease", stage:"Discovery", funding:"$38M", investors:"ARCH Venture, SR One", priority:"high", relevance:"RECON platform directly uses HERV-derived sequences for novel gene therapy delivery — highly relevant.", pinX:257, pinY:184 },
+  { name:"Kymera Therapeutics", url:"https://kymeratherapeutics.com", location:"Watertown, MA / NYC", region:"nyc", target:"AI / Platform", modality:"Targeted protein degradation (PROTAC)", indication:"Oncology, immuno-oncology", stage:"Phase 2", funding:"$400M+", investors:"Public (KYMR)", priority:"medium", relevance:"Degrader platform applicable to dark-genome derived oncoproteins.", pinX:265, pinY:149 },
+  { name:"Sorrento Therapeutics", url:"https://sorrentotherapeutics.com", location:"San Diego / NJ trials", region:"nj", target:"Noncanonical ORF", modality:"CAR-T / antibody", indication:"Multiple myeloma, solid tumors", stage:"Phase 1", funding:"Public (SRNE)", investors:"Public", priority:"low", relevance:"CAR-T and antibody-based approach with some novel antigen targeting.", pinX:263, pinY:194 },
+  { name:"Flagship Pioneering portfolio", url:"https://flagshippioneeringresearch.com", location:"Cambridge / NYC / NJ", region:"nyc", target:"AI / Platform", modality:"Platform creation (various)", indication:"Pan-cancer", stage:"Platform / research", funding:"$3B+", investors:"Self-funded + LPs", priority:"medium", relevance:"Incubates companies at intersection of RNA biology, dark genome, and novel antigen discovery (e.g., Laronde, Evotec partnerships).", pinX:271, pinY:151 }
+];
+
+const academic = [
+  { name:"Princeton University — Bhatt Lab", location:"Princeton, NJ", source:"University research", target:"HERV / ERV", tech:"HERV expression in human development and cancer; computational TE analysis", status:"Active research", pi:"Bhatt Lab (Ecology & Evolutionary Biology)", relevance:"Leading computational HERV/TE research group in NJ; potential licensing of bioinformatic tools" },
+  { name:"Penn Medicine — Carl June Lab", location:"Philadelphia, PA", source:"Tech transfer / clinical", target:"Noncanonical ORF", tech:"CAR-T and TCR-T targeting novel tumor antigens", status:"Clinical translation", pi:"Carl June, MD", relevance:"World-leading CAR-T center; tumor-specific neoantigen TCR work with dark-genome relevance" },
+  { name:"Rutgers Cancer Institute of NJ", location:"New Brunswick, NJ", source:"NIH RePORTER / tech transfer", target:"HERV / ERV", tech:"HERV expression in hematologic malignancies", status:"Active research", pi:"Multiple PIs", relevance:"NJ flagship cancer center with HERV expression profiling programs; accessible for partnership" },
+  { name:"Columbia University — Bhaskara Lab", location:"New York, NY", source:"University research", target:"Epigenetically induced", tech:"Epigenetic regulation of retroelements and tumor immunity", status:"Active research", pi:"Srividya Bhaskara", relevance:"HDAC and chromatin remodeling affecting HERV/TE expression in cancer cells" },
+  { name:"Memorial Sloan Kettering — Wolchok/Merghoub Lab", location:"New York, NY", source:"Tech transfer / clinical", target:"Noncanonical ORF", tech:"Cancer vaccine and neoantigen immunotherapy", status:"Clinical translation", pi:"Jedd Wolchok, Taha Merghoub", relevance:"MSK neoantigen platform work includes cryptic and non-canonical antigen identification" },
+  { name:"University of Pennsylvania — Bhatt Lab (Virology)", location:"Philadelphia, PA", source:"NIH RePORTER", target:"HERV / ERV", tech:"Endogenous retroviral element biology and immunity", status:"Active research", pi:"Arjun Bhatt", relevance:"Penn virology work on HERV immunogenicity directly applicable to therapeutic antigen discovery" },
+  { name:"Johns Hopkins — Baylin/Herman Lab", location:"Baltimore, MD", source:"Tech transfer / patents", target:"Epigenetically induced", tech:"DNA methylation, HERV derepression, viral mimicry in cancer", status:"Active / licensing", pi:"Stephen Baylin, James Herman", relevance:"Foundational work on epigenetic viral mimicry in cancer; multiple licensable assays and methods patents" },
+  { name:"NYU Langone — Bharat Bhatt Lab", location:"New York, NY", source:"University research / PubMed", target:"HERV / ERV", tech:"HERV expression immunopeptidomics in human cancers", status:"Active research", pi:"Multiple NYU PIs", relevance:"NYC-based; immunopeptidomics pipeline identifying HERV-derived peptides on MHC — directly relevant" },
+  { name:"NIH / NCI — Division of Cancer Biology", location:"Bethesda, MD", source:"NIH RePORTER", target:"HERV / ERV", tech:"Federal funding mechanism; HERV-cancer projects across grantee network", status:"Active funding", pi:"Multiple NCI-funded PIs", relevance:"Key funding source; RePORTER search surfaces active grants and grantee institutions" },
+  { name:"Wistar Institute", location:"Philadelphia, PA", source:"Tech transfer / patents", target:"Noncanonical ORF", tech:"Tumor immunology, neoantigen vaccines, MHC-I peptidome", status:"Active / licensing", pi:"Dmitry Gabrilovich, others", relevance:"Philadelphia-based; deep tumor immunology with cryptic peptide and neoantigen focus; TTO active" },
+  { name:"Fox Chase Cancer Center", location:"Philadelphia, PA", source:"Tech transfer / clinical", target:"Noncanonical ORF", tech:"Tumor-specific antigen discovery, immunotherapy", status:"Clinical trials", pi:"Multiple PIs", relevance:"NCI-designated cancer center in Philadelphia; clinical-stage programs with novel antigen work" },
+  { name:"Thomas Jefferson University", location:"Philadelphia, PA", source:"Tech transfer", target:"Epigenetically induced", tech:"Epigenetic cancer therapy and immunogenic cell death", status:"Active research", pi:"Multiple PIs", relevance:"Philadelphia-based academic medical center with epigenetics-immuno-oncology programs" },
+  { name:"Rowan University / Cooper Medical School", location:"Camden / Stratford, NJ", source:"University tech transfer", target:"HERV / ERV", tech:"HERV biology in neurological and oncologic disease", status:"Active research", pi:"Multiple PIs", relevance:"NJ state university with HERV research programs; lower competition for licensing or partnership" },
+  { name:"Albert Einstein College of Medicine", location:"Bronx, NY", source:"Tech transfer / NIH", target:"Transposable element", tech:"LINE-1 / transposable element activity in aging and cancer", status:"Active research", pi:"John Sedivy Lab", relevance:"Leading LINE-1 / TE biology center; retrotransposon cancer activity with therapeutic implications" }
+];
+
+const pinColors = {
+  'HERV / ERV': '#4f7cff',
+  'Transposable element': '#b48fe0',
+  'Noncanonical ORF': '#3ddab9',
+  'Cryptic peptide': '#3ddab9',
+  'Epigenetically induced': '#ff9090',
+  'AI / Platform': '#ffd96b',
+  'Academic': '#c4a0e8'
+};
+
+const targetPillClass = {
+  'HERV / ERV': 'pill-herv',
+  'Transposable element': 'pill-te',
+  'Noncanonical ORF': 'pill-neo',
+  'Cryptic peptide': 'pill-neo',
+  'Epigenetically induced': 'pill-epi',
+  'AI / Platform': 'pill-ai',
+};
+
+const stagePillClass = {
+  'Discovery': 'pill-stage-pre',
+  'Preclinical': 'pill-stage-pre',
+  'Phase 1': 'pill-stage-p1',
+  'Phase 2': 'pill-stage-p2',
+  'Phase 3': 'pill-stage-p3',
+  'Platform / research': 'pill-stage-pre',
+};
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 70; window.scrollTo({top:y, behavior:'smooth'}); }
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function renderCompanies() {
+  const q = (document.getElementById('co-search')?.value||'').toLowerCase();
+  const tgt = document.getElementById('co-target')?.value||'';
+  const stg = document.getElementById('co-stage')?.value||'';
+  const pri = document.getElementById('co-priority')?.value||'';
+  const filtered = companies.filter(c => {
+    const txt = [c.name,c.target,c.modality,c.indication,c.investors,c.location].join(' ').toLowerCase();
+    return (!q||txt.includes(q)) && (!tgt||c.target===tgt) && (!stg||c.stage===stg) && (!pri||c.priority===pri);
+  });
+  const tbody = document.getElementById('co-body');
+  tbody.innerHTML = filtered.map(c => `
+    <tr>
+      <td class="name-cell"><a href="${c.url}" target="_blank">${c.name}</a></td>
+      <td>${c.location}</td>
+      <td><span class="pill ${targetPillClass[c.target]||'pill-herv'}">${c.target}</span></td>
+      <td>${c.modality}</td>
+      <td>${c.indication}</td>
+      <td><span class="pill ${stagePillClass[c.stage]||'pill-stage-pre'}">${c.stage}</span></td>
+      <td style="white-space:nowrap;">${c.funding||'—'}</td>
+      <td style="max-width:160px;font-size:11px;">${c.investors||'—'}</td>
+      <td><span class="priority-dot p-${c.priority}"></span>${c.priority.charAt(0).toUpperCase()+c.priority.slice(1)}</td>
+    </tr>
+  `).join('');
+  document.getElementById('s-companies').textContent = filtered.length;
+}
+
+function filterTable() { renderCompanies(); }
+
+function renderAcademic() {
+  const tbody = document.getElementById('ac-body');
+  tbody.innerHTML = academic.map(a => `
+    <tr>
+      <td class="name-cell">${a.name}</td>
+      <td>${a.location}</td>
+      <td><span class="pill pill-academic">${a.source}</span></td>
+      <td><span class="pill ${targetPillClass[a.target]||'pill-herv'}">${a.target}</span></td>
+      <td style="max-width:200px;font-size:12px;">${a.tech}</td>
+      <td><span class="pill pill-stage-pre">${a.status}</span></td>
+      <td style="font-size:11px;">${a.pi}</td>
+      <td style="max-width:180px;font-size:11px;color:var(--muted2);">${a.relevance}</td>
+    </tr>
+  `).join('');
+  document.getElementById('s-academic').textContent = academic.length;
+  document.getElementById('s-clinical').textContent = companies.filter(c=>['Phase 1','Phase 2','Phase 3'].includes(c.stage)).length;
+}
+
+function renderMap() {
+  const g = document.getElementById('map-pins');
+  g.innerHTML = '';
+  companies.forEach((c,i) => {
+    const col = pinColors[c.target] || '#4f7cff';
+    const r = c.priority === 'high' ? 7 : c.priority === 'medium' ? 5.5 : 4;
+    const pin = document.createElementNS('http://www.w3.org/2000/svg','g');
+    pin.setAttribute('class','map-pin');
+    pin.setAttribute('data-idx',i);
+    pin.innerHTML = `
+      <circle class="outer" cx="${c.pinX}" cy="${c.pinY}" r="${r+5}" stroke="${col}" fill="none" stroke-width="1.2" opacity="0.4"/>
+      <circle class="inner" cx="${c.pinX}" cy="${c.pinY}" r="${r}" fill="${col}" opacity="0.9"/>
+    `;
+    pin.addEventListener('click', () => showDetail(i));
+    g.appendChild(pin);
+  });
+}
+
+function showDetail(i) {
+  const c = companies[i];
+  document.querySelectorAll('.map-pin .outer').forEach(el => { el.style.opacity = '0.4'; el.style.animation = ''; });
+  const pins = document.querySelectorAll('.map-pin');
+  const outerCircle = pins[i]?.querySelector('.outer');
+  if (outerCircle) { outerCircle.style.opacity = '1'; outerCircle.style.animation = 'pulse 1.5s ease-in-out infinite'; }
+  const box = document.getElementById('entity-detail');
+  box.innerHTML = `
+    <button class="detail-close" onclick="clearDetail()">×</button>
+    <div class="detail-name">${c.name}</div>
+    <div class="detail-type-row">
+      <span class="pill ${targetPillClass[c.target]||'pill-herv'}">${c.target}</span>
+      <span class="pill ${stagePillClass[c.stage]||'pill-stage-pre'}">${c.stage}</span>
+      <span class="priority-dot p-${c.priority}" style="margin-left:4px;"></span>
+    </div>
+    <div class="detail-section-lbl">Location</div>
+    <div class="detail-value">${c.location}</div>
+    <div class="detail-section-lbl">Modality</div>
+    <div class="detail-value">${c.modality}</div>
+    <div class="detail-section-lbl">Indication</div>
+    <div class="detail-value">${c.indication}</div>
+    <div class="detail-section-lbl">Funding</div>
+    <div class="detail-value">${c.funding}</div>
+    <div class="detail-section-lbl">Key investors</div>
+    <div class="detail-value">${c.investors}</div>
+    <div class="detail-section-lbl">Why relevant</div>
+    <div class="detail-value">${c.relevance}</div>
+    ${c.url ? `<a class="detail-link" href="${c.url}" target="_blank">↗ View company website</a>` : ''}
+  `;
+}
+
+function clearDetail() {
+  document.querySelectorAll('.map-pin .outer').forEach(el => { el.style.opacity = '0.4'; el.style.animation = ''; });
+  document.getElementById('entity-detail').innerHTML = `<div class="detail-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Click a pin on the map to view detailed entity profile</div>`;
+}
+
+function setQ(q) { document.getElementById('ai-query').value = q; }
+
+async function runAISearch() {
+  const query = document.getElementById('ai-query').value.trim();
+  if (!query) return;
+  const btn = document.getElementById('ai-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Searching...';
+  document.getElementById('ai-output').innerHTML = '<span class="spinner"></span><span style="color:var(--muted);font-size:13px;">Searching live sources...</span>';
+  document.getElementById('ai-result-cards').innerHTML = '';
+
+  const sys = `You are a biotech VC analyst specializing in dark genome therapeutics — HERVs, endogenous retroviruses, transposable elements, and novel tumor antigen discovery. Search the web and return a JSON array of 5-8 real companies or assets. Each must have: name, url, location, type (Startup|Academic IP|Patent|Clinical asset|Platform), modality, targetType (HERV/ERV|Transposable element|Noncanonical ORF|Cryptic peptide|Epigenetically induced antigen|AI/Platform|Unknown), indication, stage (Discovery|Preclinical|Phase 1|Phase 2|Phase 3|Platform/research), funding, investors, founders, relevance (2-3 sentence explanation), investmentRationale (1-2 sentences), priority (high|medium|low). Return ONLY valid JSON array, no markdown.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:4000, system:sys,
+        tools:[{type:"web_search_20250305",name:"web_search"}],
+        messages:[{role:"user",content:`Search: "${query}". Find real companies/assets related to dark genome therapeutics.`}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.map(i=>i.type==='text'?i.text:'').filter(Boolean).join('\n');
+    const s = text.indexOf('['), e = text.lastIndexOf(']');
+    if (s<0||e<0) throw new Error('No results found');
+    const results = JSON.parse(text.slice(s,e+1));
+    document.getElementById('ai-output').innerHTML = `<span style="color:var(--accent3);font-size:13px;">Found ${results.length} results from live web search</span>`;
+    document.getElementById('ai-result-cards').innerHTML = results.map((r,i) => `
+      <div class="result-card">
+        <div class="rc-header">
+          <div><div class="rc-name">${r.name||'Unknown'}</div><div class="rc-meta">${r.type||''} · ${r.location||''}</div></div>
+          <span class="priority-dot p-${r.priority||'low'}" style="margin-top:5px;"></span>
+        </div>
+        <div class="rc-grid">
+          <div><div class="rc-field-lbl">Target</div><div class="rc-field-val">${r.targetType||'—'}</div></div>
+          <div><div class="rc-field-lbl">Stage</div><div class="rc-field-val">${r.stage||'—'}</div></div>
+          <div><div class="rc-field-lbl">Funding</div><div class="rc-field-val">${r.funding||'—'}</div></div>
+          <div><div class="rc-field-lbl">Modality</div><div class="rc-field-val">${r.modality||'—'}</div></div>
+          <div><div class="rc-field-lbl">Indication</div><div class="rc-field-val">${r.indication||'—'}</div></div>
+          <div><div class="rc-field-lbl">Investors</div><div class="rc-field-val">${r.investors||'—'}</div></div>
+        </div>
+        <div class="rc-relevance"><strong>Relevance:</strong> ${r.relevance||''}<br><strong>Investment thesis:</strong> ${r.investmentRationale||''}</div>
+        <div class="rc-actions">
+          <button class="rc-btn primary" onclick="addToDatabase(${i}, window._aiResults)">+ Add to database</button>
+          ${r.url?`<button class="rc-btn" onclick="window.open('${r.url}','_blank')">↗ View</button>`:''}
+        </div>
+      </div>
+    `).join('');
+    window._aiResults = results;
+  } catch(err) {
+    document.getElementById('ai-output').innerHTML = `<span style="color:#ff9090;font-size:13px;">Search failed: ${err.message}</span>`;
+  }
+  btn.disabled = false; btn.innerHTML = 'Search live ↗';
+}
+
+function addToDatabase(i, results) {
+  if (!results||!results[i]) return;
+  const r = results[i];
+  if (companies.find(c=>c.name===r.name)) { alert(r.name+' already in database.'); return; }
+  companies.push({ name:r.name, url:r.url||'', location:r.location||'', region:'nyc',
+    target:r.targetType||'Unknown', modality:r.modality||'', indication:r.indication||'',
+    stage:r.stage||'Discovery', funding:r.funding||'', investors:r.investors||'',
+    priority:r.priority||'low', relevance:r.relevance||'', pinX:265+Math.random()*20-10, pinY:145+Math.random()*20-10
+  });
+  renderCompanies(); renderMap();
+  const cards = document.querySelectorAll('.result-card');
+  const btn = cards[i]?.querySelector('.rc-btn.primary');
+  if (btn) { btn.textContent = 'Added ✓'; btn.disabled = true; btn.style.opacity = '0.5'; }
+}
+
+function exportCSV(type) {
+  const data = type === 'academic' ? academic : companies;
+  const keys = Object.keys(data[0]).filter(k=>!['pinX','pinY','region'].includes(k));
+  const header = keys.join(',');
+  const rows = data.map(r=>keys.map(k=>'"'+(r[k]||'').toString().replace(/"/g,'""')+'"').join(','));
+  const csv = [header,...rows].join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`dark_genome_${type}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  renderCompanies();
+  renderAcademic();
+  renderMap();
+});
+</script>
+</body>
+</html>
